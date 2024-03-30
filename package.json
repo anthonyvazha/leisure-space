@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.3",
+    "@xpressai/vecto-client": "^0.0.10",
     "react": "^18.2.0",
     "react-before-after-slider-component": "^1.1.8",
     "react-dom": "^18.2.0"

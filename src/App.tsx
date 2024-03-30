@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import ReactBeforeSliderComponent from "react-before-after-slider-component";
@@ -76,6 +76,27 @@ export default function App() {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
 
+  const formData = new FormData();
+  formData.append("modality", "TEXT");
+  formData.append("top_k", "1");
+  formData.append("query", "");
+  formData.append("ids", "12");
+
+  useEffect(() => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
+      },
+      body: formData,
+    };
+    fetch("https://api.vecto.ai/api/v0/space/28778/lookup", requestOptions)
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+  }, []);
+
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -122,7 +143,7 @@ export default function App() {
         {/* Product info */}
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <h1 className="text-9xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {product.name}
             </h1>
           </div>
