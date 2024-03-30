@@ -71,10 +71,33 @@ const reviews = { href: "#", average: 4, totalCount: 117 };
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+interface IRoom {
+  room_id: string;
+  square_meter: string;
+  end_at: string;
+  town: string;
+  prefecture: string;
+  usage: string;
+  lon: string;
+  num_of_people: string;
+  ward: string;
+  start_at: string;
+  room_tagline: string;
+  room_title: string;
+  booking_id: string;
+  review_point?: string; 
+  rooms_capacity: string;
+  user_id: string;
+  room_description: string;
+  booked_at: string;
+  room_url: string;
+  lat: string;
+}
 
 export default function App() {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const [data, setData] = useState<IRoom | null>(null);
 
   const formData = new FormData();
   formData.append("modality", "TEXT");
@@ -83,59 +106,69 @@ export default function App() {
   formData.append("ids", "12");
 
   useEffect(() => {
+    const formData = new FormData();
+    formData.append("modality", "TEXT");
+    formData.append("top_k", "1");
+    formData.append("query", "");
+    formData.append("ids", "12");
+
     const requestOptions = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
-      },
-      body: formData,
+        method: "POST",
+        headers: {
+            accept: "application/json",
+            Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
+        },
+        body: formData,
     };
+
     fetch("https://api.vecto.ai/api/v0/space/28778/lookup", requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
-  }, []);
+        .then((response) => response.json())
+        .then((json) => {
+            if (json.results && json.results.length > 0) {
+                // Assuming the data you need is in the first item of the results array
+                const data = json.results[0].attributes;
+                console.log(data);
+                setData(data);  // Set the data in state
+            }
+        })
+        .catch((error) => console.error("Error:", error));
+}, []);
+
 
   return (
     <div className="bg-white">
       <div className="pt-6">
+      {data ? (
+        <div>
+          <h1>{data.room_title}</h1>
+          <p>{data.room_description}</p>
+          {/* More rendering based on the data */}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
         <nav aria-label="Breadcrumb">
+          
           <ol
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {product.breadcrumbs.map((breadcrumb) => (
-              <li key={breadcrumb.id}>
-                <div className="flex items-center">
-                  <a
-                    href={breadcrumb.href}
-                    className="mr-2 text-sm font-medium text-gray-900"
-                  >
-                    {breadcrumb.name}
-                  </a>
-                  <svg
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
-                </div>
-              </li>
-            ))}
-            <li className="text-sm">
-              <a
-                href={product.href}
-                aria-current="page"
-                className="font-medium text-gray-500 hover:text-gray-600"
-              >
-                {product.name}
-              </a>
-            </li>
+            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+            <h1 className="text-9xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            {data ? (
+        <div>
+          <h1>{data.room_title}</h1>
+          
+          {/* More rendering based on the data */}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+            </h1>
+          </div>
+
+            
+            
           </ol>
         </nav>
 
@@ -143,9 +176,7 @@ export default function App() {
         {/* Product info */}
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-9xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              {product.name}
-            </h1>
+           
           </div>
 
           {/* Options */}
@@ -326,7 +357,15 @@ export default function App() {
               />
 
               <div className="space-y-6">
-                <p className="text-base text-gray-900">{product.description}</p>
+                <div className="text-base text-gray-900">{data ? (
+        <div>
+          <h1>{data.room_title}</h1>
+          
+          {/* More rendering based on the data */}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}</div>
               </div>
             </div>
 
