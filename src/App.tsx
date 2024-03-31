@@ -4,9 +4,6 @@ import TopImages from "./components/topImages/TopImages";
 import Tokyo from "../public/prefecture/tokyo.jpg";
 import Japan from "../public/prefecture/japan.jpg";
 import Osaka from "../public/prefecture/osaka.jpeg";
-import RoomIcon from "../public/icons8-room-32.png";
-import DefaultUsageIcon from "../public/icons8-thumb-30.png";
-import FoodIcon from "../public/icons8-kawaii-steak-30.png";
 
 import NoData from "../public/no-data.png";
 
