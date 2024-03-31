@@ -30,7 +30,7 @@ interface IRoom {
   booked_at: string;
   room_url: string;
   lat: string;
-  images?: string[];
+  location_images?: string[];
 }
 
 export default function App() {
@@ -116,7 +116,7 @@ export default function App() {
       <div className="pt-6">
         {data ? (
           <div>
-            <TopImages images={data.images ?? []} />
+            <TopImages images={data.location_images ?? []} />
             <main>
               <div className="bg-white pt-10 sm:pt-16 lg:overflow-hidden lg:pb-14 lg:pt-8">
                 <div className="mx-auto max-w-7xl lg:px-8">
