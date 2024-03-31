@@ -37,12 +37,13 @@ export default function App() {
   const [data, setData] = useState<IRoom | null>(null);
 
   useEffect(() => {
+    let log = new URLSearchParams(window.location.search).get("id");
+
     const formData = new FormData();
     formData.append("modality", "TEXT");
     formData.append("top_k", "1");
     formData.append("query", "");
-    formData.append("ids", "15");
-
+    formData.append("ids", log ?? "15");
     const requestOptions = {
       method: "POST",
       headers: {
