@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "react-before-after-slider-component/dist/build.css";
 import TopImages from "./components/topImages/TopImages";
 import Tokyo from "../public/prefecture/tokyo.jpg";
 import Japan from "../public/prefecture/japan.jpg";
@@ -7,6 +6,8 @@ import Osaka from "../public/prefecture/osaka.jpeg";
 import Gifu from "../public/prefecture/gifu.jpeg";
 
 import NoData from "../public/no-data.png";
+
+import "react-before-after-slider-component/dist/build.css";
 
 interface IRoom {
   room_id: string;
@@ -102,6 +103,10 @@ export default function App() {
     }
   }
 
+  const formattedText = (text: string): string => {
+    return text.split("■").join("<br />■");
+  };
+
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -138,14 +143,16 @@ export default function App() {
                         <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl lg:mt-6 xl:text-6xl">
                           {data.room_title}
                         </h1>
-                        <p className="mt-3 text-base text-gray-900 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                          {data.room_description}
-                        </p>
+                        <p
+                          className="mt-3 text-base text-gray-900 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl"
+                          dangerouslySetInnerHTML={{
+                            __html: formattedText(data.room_description),
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="-mb-16 mt-12 sm:-mb-48 lg:relative lg:m-0">
                       <div className="mx-auto max-w-md px-6 sm:max-w-2xl lg:max-w-none lg:px-0">
-                        {/* Illustration taken from Lucid Illustrations: https://lucid.pixsellz.io/ */}
                         <img
                           className="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none rounded-lg"
                           src={imageUrl}
@@ -158,10 +165,10 @@ export default function App() {
               </div>
             </main>
             <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-600 sm:text-6xl">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-600 sm:text-6xl mx-48">
                 {data.room_tagline}
               </h1>
-              <div className="text-center mt-10">
+              <div className="mt-10">
                 <button
                   role="button"
                   className="relative inline-flex items-center justify-center p-0.5 mb-10 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group hover:bg-black hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 "
