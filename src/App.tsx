@@ -1,76 +1,15 @@
 import { useState, useEffect } from "react";
-import { StarIcon } from "@heroicons/react/20/solid";
-import { RadioGroup } from "@headlessui/react";
-import ReactBeforeSliderComponent from "react-before-after-slider-component";
 import "react-before-after-slider-component/dist/build.css";
 import TopImages from "./components/topImages/TopImages";
+import Tokyo from "../public/prefecture/tokyo.jpg";
+import Japan from "../public/prefecture/japan.jpg";
+import Osaka from "../public/prefecture/osaka.jpeg";
+import RoomIcon from "../public/icons8-room-32.png";
+import DefaultUsageIcon from "../public/icons8-thumb-30.png";
+import FoodIcon from "../public/icons8-kawaii-steak-30.png";
 
-const FIRST_IMAGE = {
-  imageUrl:
-    "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-};
-const SECOND_IMAGE = {
-  imageUrl:
-    "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
-};
+import NoData from "../public/no-data.png";
 
-const product = {
-  name: "Basic Tee 6-Pack",
-  price: "$192",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
-      alt: "Two each of gray, white, and black shirts laying flat.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-      alt: "Model wearing plain black basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
-      alt: "Model wearing plain gray basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
-      alt: "Model wearing plain white basic tee.",
-    },
-  ],
-  colors: [
-    { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
-    { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
-    { name: "Black", class: "bg-gray-900", selectedClass: "ring-gray-900" },
-  ],
-  sizes: [
-    { name: "XXS", inStock: false },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: true },
-    { name: "2XL", inStock: true },
-    { name: "3XL", inStock: true },
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    "Hand cut and sewn locally",
-    "Dyed with our proprietary colors",
-    "Pre-washed & pre-shrunk",
-    "Ultra-soft 100% cotton",
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-};
-const reviews = { href: "#", average: 4, totalCount: 117 };
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
 interface IRoom {
   room_id: string;
   square_meter: string;
@@ -85,18 +24,17 @@ interface IRoom {
   room_tagline: string;
   room_title: string;
   booking_id: string;
-  review_point?: string; 
+  review_point?: string;
   rooms_capacity: string;
   user_id: string;
   room_description: string;
   booked_at: string;
   room_url: string;
   lat: string;
+  images?: string[];
 }
 
 export default function App() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
   const [data, setData] = useState<IRoom | null>(null);
 
   const formData = new FormData();
@@ -113,285 +51,156 @@ export default function App() {
     formData.append("ids", "12");
 
     const requestOptions = {
-        method: "POST",
-        headers: {
-            accept: "application/json",
-            Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
-        },
-        body: formData,
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
+      },
+      body: formData,
     };
 
     fetch("https://api.vecto.ai/api/v0/space/28778/lookup", requestOptions)
-        .then((response) => response.json())
-        .then((json) => {
-            if (json.results && json.results.length > 0) {
-                // Assuming the data you need is in the first item of the results array
-                const data = json.results[0].attributes;
-                console.log(data);
-                setData(data);  // Set the data in state
-            }
-        })
-        .catch((error) => console.error("Error:", error));
-}, []);
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.results && json.results.length > 0) {
+          // Assuming the data you need is in the first item of the results array
+          const data = json.results[0].attributes;
+          console.log(data);
+          setData(data); // Set the data in state
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }, []);
+  //image url for prefectures
+  let imageUrl = "";
+  let tagImageUrl = "";
 
+  if (data?.prefecture !== null) {
+    switch (data?.prefecture) {
+      case "東京都":
+        imageUrl = Tokyo;
+        break;
+      case "大阪府":
+        imageUrl = Osaka;
+        break;
+      default:
+        imageUrl = Japan;
+    }
+
+    if (data?.usage !== null) {
+      switch (data?.usage) {
+        case "住宅":
+          tagImageUrl = "🏠";
+          break;
+        case "料理":
+          tagImageUrl = "🍜";
+          break;
+        default:
+          tagImageUrl = "😀";
+      }
+    }
+  }
 
   return (
     <div className="bg-white">
       <div className="pt-6">
-      {data ? (
-        <div>
-          <h1>{data.room_title}</h1>
-          <p>{data.room_description}</p>
-          {/* More rendering based on the data */}
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
-        <nav aria-label="Breadcrumb">
-          
-          <ol
-            role="list"
-            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-          >
-            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-9xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            {data ? (
-        <div>
-          <h1>{data.room_title}</h1>
-          
-          {/* More rendering based on the data */}
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
-            </h1>
-          </div>
-
-            
-            
-          </ol>
-        </nav>
-
-        <TopImages images={product.images} />
-        {/* Product info */}
-        <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-           
-          </div>
-
-          {/* Options */}
-          <div className="mt-4 lg:row-span-3 lg:mt-0">
-            <h2 className="sr-only">Product information</h2>
-            <p className="text-3xl tracking-tight text-gray-900">
-              {product.price}
-            </p>
-
-            {/* Reviews */}
-            <div className="mt-6">
-              <h3 className="sr-only">Reviews</h3>
-              <div className="flex items-center">
-                <div className="flex items-center">
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        reviews.average > rating
-                          ? "text-gray-900"
-                          : "text-gray-200",
-                        "h-5 w-5 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-                <p className="sr-only">{reviews.average} out of 5 stars</p>
-                <a
-                  href={reviews.href}
-                  className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  {reviews.totalCount} reviews
-                </a>
-              </div>
-            </div>
-
-            <form className="mt-10">
-              {/* Colors */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Color</h3>
-
-                <RadioGroup
-                  value={selectedColor}
-                  onChange={setSelectedColor}
-                  className="mt-4"
-                >
-                  <RadioGroup.Label className="sr-only">
-                    Choose a color
-                  </RadioGroup.Label>
-                  <div className="flex items-center space-x-3">
-                    {product.colors.map((color) => (
-                      <RadioGroup.Option
-                        key={color.name}
-                        value={color}
-                        className={({ active, checked }) =>
-                          classNames(
-                            color.selectedClass,
-                            active && checked ? "ring ring-offset-1" : "",
-                            !active && checked ? "ring-2" : "",
-                            "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none"
-                          )
-                        }
-                      >
-                        <RadioGroup.Label as="span" className="sr-only">
-                          {color.name}
-                        </RadioGroup.Label>
-                        <span
-                          aria-hidden="true"
-                          className={classNames(
-                            color.class,
-                            "h-8 w-8 rounded-full border border-black border-opacity-10"
-                          )}
+        {data ? (
+          <div>
+            <TopImages images={data.images ?? []} />
+            <main>
+              <div className="bg-white pt-10 sm:pt-16 lg:overflow-hidden lg:pb-14 lg:pt-8">
+                <div className="mx-auto max-w-7xl lg:px-8">
+                  <div className="lg:grid lg:grid-cols-2 lg:gap-8">
+                    <div className="mx-auto max-w-md px-6 sm:max-w-2xl sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
+                      <div className="lg:py-12">
+                        <button
+                          className="bg-indigo-500 text-white active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150 mr-4"
+                          type="button"
+                        >
+                          <span className="text-2xl">🏠</span>
+                          {data.square_meter}m2
+                        </button>
+                        <button
+                          className="bg-indigo-500 text-white active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-4"
+                          type="button"
+                        >
+                          <span className="text-2xl">🙍🏻‍♀️</span>
+                          {data.num_of_people}
+                        </button>
+                        <button
+                          className="bg-indigo-500 text-black active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                          type="button"
+                        >
+                          <span className="text-2xl">{tagImageUrl}</span>
+                        </button>
+                        <div className="hidden sm:mb-5 sm:flex sm:justify-center lg:justify-start"></div>
+                        <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl lg:mt-6 xl:text-6xl">
+                          {data.room_title}
+                        </h1>
+                        <p className="mt-3 text-base text-gray-900 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                          {data.room_description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="-mb-16 mt-12 sm:-mb-48 lg:relative lg:m-0">
+                      <div className="mx-auto max-w-md px-6 sm:max-w-2xl lg:max-w-none lg:px-0">
+                        {/* Illustration taken from Lucid Illustrations: https://lucid.pixsellz.io/ */}
+                        <img
+                          className="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none rounded-lg"
+                          src={imageUrl}
+                          alt=""
                         />
-                      </RadioGroup.Option>
-                    ))}
+                      </div>
+                    </div>
                   </div>
-                </RadioGroup>
-              </div>
-
-              {/* Sizes */}
-              <div className="mt-10">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Size guide
-                  </a>
                 </div>
-
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                  className="mt-4"
+              </div>
+            </main>
+            <div className="text-center">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                {data.room_tagline}
+              </h1>
+              <div className="text-center mt-10">
+                <button
+                  role="button"
+                  className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
                 >
-                  <RadioGroup.Label className="sr-only">
-                    Choose a size
-                  </RadioGroup.Label>
-                  <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                    {product.sizes.map((size) => (
-                      <RadioGroup.Option
-                        key={size.name}
-                        value={size}
-                        disabled={!size.inStock}
-                        className={({ active }) =>
-                          classNames(
-                            size.inStock
-                              ? "cursor-pointer bg-white text-gray-900 shadow-sm"
-                              : "cursor-not-allowed bg-gray-50 text-gray-200",
-                            active ? "ring-2 ring-indigo-500" : "",
-                            "group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
-                          )
-                        }
-                      >
-                        {({ active, checked }) => (
-                          <>
-                            <RadioGroup.Label as="span">
-                              {size.name}
-                            </RadioGroup.Label>
-                            {size.inStock ? (
-                              <span
-                                className={classNames(
-                                  active ? "border" : "border-2",
-                                  checked
-                                    ? "border-indigo-500"
-                                    : "border-transparent",
-                                  "pointer-events-none absolute -inset-px rounded-md"
-                                )}
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <span
-                                aria-hidden="true"
-                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                              >
-                                <svg
-                                  className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                                  viewBox="0 0 100 100"
-                                  preserveAspectRatio="none"
-                                  stroke="currentColor"
-                                >
-                                  <line
-                                    x1={0}
-                                    y1={100}
-                                    x2={100}
-                                    y2={0}
-                                    vectorEffect="non-scaling-stroke"
-                                  />
-                                </svg>
-                              </span>
-                            )}
-                          </>
-                        )}
-                      </RadioGroup.Option>
-                    ))}
-                  </div>
-                </RadioGroup>
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    <a
+                      href={data.room_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      For more information
+                    </a>
+                  </span>
+                </button>
+              </div>
+              <div className="flex justify-center">
+                <iframe
+                  width="700"
+                  height="500"
+                  frameBorder="0"
+                  style={{ border: 0 }}
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCQWqkfbGYPa37QQlkCBzDSdD7UvxZ-mOk&q=${data.lat},${data.lon}`}
+                  allowFullScreen
+                ></iframe>
               </div>
 
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to bag
-              </button>
-            </form>
-          </div>
-
-          <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
-            {/* Description and details */}
-            <div>
-              <h3 className="sr-only">Description</h3>
-              <ReactBeforeSliderComponent
-                firstImage={FIRST_IMAGE}
-                secondImage={SECOND_IMAGE}
-              />
-
-              <div className="space-y-6">
-                <div className="text-base text-gray-900">{data ? (
-        <div>
-          <h1>{data.room_title}</h1>
-          
-          {/* More rendering based on the data */}
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}</div>
-              </div>
-            </div>
-
-            <div className="mt-10">
-              <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
-
-              <div className="mt-4">
-                <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {product.highlights.map((highlight) => (
-                    <li key={highlight} className="text-gray-400">
-                      <span className="text-gray-600">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-10">
-              <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
-              <div className="mt-4 space-y-6">
-                <p className="text-sm text-gray-600">{product.details}</p>
+              {/* Product info */}
+              <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
+                <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8"></div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div className="flex justify-center align-middle">
+              <img src={NoData} alt="No data available" />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
