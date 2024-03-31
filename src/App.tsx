@@ -97,6 +97,9 @@ export default function App() {
         case "その他のビジネス":
           tagImageUrl = "🏢";
           break;
+        case "同窓会":
+          tagImageUrl = "💻";
+          break;
         default:
           tagImageUrl = "😀";
       }
