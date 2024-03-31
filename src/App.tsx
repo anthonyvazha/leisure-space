@@ -4,6 +4,7 @@ import TopImages from "./components/topImages/TopImages";
 import Tokyo from "../public/prefecture/tokyo.jpg";
 import Japan from "../public/prefecture/japan.jpg";
 import Osaka from "../public/prefecture/osaka.jpeg";
+import Gifu from "../public/prefecture/gifu.jpeg";
 
 import NoData from "../public/no-data.png";
 
@@ -34,29 +35,23 @@ interface IRoom {
 export default function App() {
   const [data, setData] = useState<IRoom | null>(null);
 
-  const formData = new FormData();
-  formData.append("modality", "TEXT");
-  formData.append("top_k", "1");
-  formData.append("query", "");
-  formData.append("ids", "12");
-
   useEffect(() => {
     const formData = new FormData();
     formData.append("modality", "TEXT");
     formData.append("top_k", "1");
     formData.append("query", "");
-    formData.append("ids", "12");
+    formData.append("ids", "15");
 
     const requestOptions = {
       method: "POST",
       headers: {
         accept: "application/json",
-        Authorization: "Bearer 73c59344-fdf4-4fe5-a6b9-790554a1a9c5",
+        Authorization: "Bearer 0e0d8e30-8eb5-4b6f-a1c3-0056a03c3f82",
       },
       body: formData,
     };
 
-    fetch("https://api.vecto.ai/api/v0/space/28778/lookup", requestOptions)
+    fetch("https://api.vecto.ai/api/v0/space/28772/lookup", requestOptions)
       .then((response) => response.json())
       .then((json) => {
         if (json.results && json.results.length > 0) {
@@ -80,6 +75,9 @@ export default function App() {
       case "大阪府":
         imageUrl = Osaka;
         break;
+      case "岐阜県":
+        imageUrl = Gifu;
+        break;
       default:
         imageUrl = Japan;
     }
@@ -91,6 +89,12 @@ export default function App() {
           break;
         case "料理":
           tagImageUrl = "🍜";
+          break;
+        case "トレーニング":
+          tagImageUrl = "🏃🏻‍♂️‍➡️";
+          break;
+        case "その他のビジネス":
+          tagImageUrl = "🏢";
           break;
         default:
           tagImageUrl = "😀";
@@ -111,21 +115,21 @@ export default function App() {
                     <div className="mx-auto max-w-md px-6 sm:max-w-2xl sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
                       <div className="lg:py-12">
                         <button
-                          className="bg-indigo-500 text-white active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150 mr-4"
+                          className="bg-primary text-white active:bg-blue-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150 mr-4"
                           type="button"
                         >
                           <span className="text-2xl">🏠</span>
                           {data.square_meter}m2
                         </button>
                         <button
-                          className="bg-indigo-500 text-white active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-4"
+                          className="bg-primary text-white active:bg-blue-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-4"
                           type="button"
                         >
                           <span className="text-2xl">🙍🏻‍♀️</span>
                           {data.num_of_people}
                         </button>
                         <button
-                          className="bg-indigo-500 text-black active:bg-indigo-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                          className="bg-primary text-black active:bg-blue-600 font-bold text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                           type="button"
                         >
                           <span className="text-2xl">{tagImageUrl}</span>
@@ -154,15 +158,15 @@ export default function App() {
               </div>
             </main>
             <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-600 sm:text-6xl">
                 {data.room_tagline}
               </h1>
               <div className="text-center mt-10">
                 <button
                   role="button"
-                  className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+                  className="relative inline-flex items-center justify-center p-0.5 mb-10 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group hover:bg-black hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 "
                 >
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-primary rounded-md group-hover:bg-opacity-0">
                     <a
                       href={data.room_url}
                       target="_blank"
@@ -173,9 +177,9 @@ export default function App() {
                   </span>
                 </button>
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center ">
                 <iframe
-                  width="700"
+                  width="100%"
                   height="500"
                   frameBorder="0"
                   style={{ border: 0 }}
@@ -183,11 +187,6 @@ export default function App() {
                   src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCQWqkfbGYPa37QQlkCBzDSdD7UvxZ-mOk&q=${data.lat},${data.lon}`}
                   allowFullScreen
                 ></iframe>
-              </div>
-
-              {/* Product info */}
-              <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-                <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8"></div>
               </div>
             </div>
           </div>
